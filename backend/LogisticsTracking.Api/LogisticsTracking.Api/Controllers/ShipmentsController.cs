@@ -50,6 +50,47 @@ namespace LogisticsTracking.Api.Controllers
             }
         }
 
+        // ✅ NEW: Admin list shipments (optional ?status=0/1/2)
+        // GET api/Shipments?status=0
+        [HttpGet]
+        public async Task<ActionResult<List<ShipmentListItemResponse>>> GetShipments([FromQuery] int? status)
+        {
+            try
+            {
+                ShipmentStatus? parsedStatus = null;
+
+                if (status.HasValue)
+                {
+                    if (!Enum.IsDefined(typeof(ShipmentStatus), status.Value))
+                    {
+                        return BadRequest(new { message = "Invalid status value." });
+                    }
+
+                    parsedStatus = (ShipmentStatus)status.Value;
+                }
+
+                var shipments = await _shipmentService.GetShipmentsAsync(parsedStatus);
+
+                var response = shipments.Select(s => new ShipmentListItemResponse
+                {
+                    Id = s.Id,
+                    TrackingCode = s.TrackingCode,
+                    Status = s.Status,
+                    OriginBranchName = s.OriginBranch.Name,
+                    DestinationBranchName = s.DestinationBranch.Name,
+                    AssignedDriverId = s.AssignedDriverId,
+                    CreatedAt = s.CreatedAt
+                }).ToList();
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error listing shipments");
+                return StatusCode(500, new { message = "An error occurred while listing shipments." });
+            }
+        }
+
         // GET api/Shipments/{trackingCode}
         [HttpGet("{trackingCode}")]
         public async Task<ActionResult<ShipmentDetailsResponse>> GetByTrackingCode(string trackingCode)
@@ -63,27 +104,7 @@ namespace LogisticsTracking.Api.Controllers
                     return NotFound(new { message = "Shipment not found." });
                 }
 
-                var response = new ShipmentDetailsResponse
-                {
-                    TrackingCode = shipment.TrackingCode,
-                    Status = shipment.Status,
-                    SenderName = shipment.SenderName,
-                    SenderPhone = shipment.SenderPhone,
-                    ReceiverName = shipment.ReceiverName,
-                    ReceiverPhone = shipment.ReceiverPhone,
-                    OriginBranchName = shipment.OriginBranch.Name,
-                    DestinationBranchName = shipment.DestinationBranch.Name,
-                    CreatedAt = shipment.CreatedAt,
-                    Events = shipment.Events.Select(e => new TrackingEventResponse
-                    {
-                        Status = e.Status.ToString(),
-                        Description = e.Description,
-                        CreatedAt = e.CreatedAt,
-                        Lat = e.Lat,
-                        Lng = e.Lng,
-                        LocationText = e.LocationText
-                    }).ToList()
-                };
+                var response = MapToDetailsResponse(shipment);
 
                 return Ok(response);
             }
@@ -92,6 +113,58 @@ namespace LogisticsTracking.Api.Controllers
                 _logger.LogError(ex, "Error getting shipment by tracking code {TrackingCode}", trackingCode);
                 return StatusCode(500, new { message = "An error occurred while retrieving the shipment." });
             }
+        }
+
+        // ✅ NEW: add tracking event / update status (Driver or Admin)
+        // POST api/Shipments/{trackingCode}/events
+        [HttpPost("{trackingCode}/events")]
+        public async Task<ActionResult<ShipmentDetailsResponse>> AddEvent(
+            string trackingCode,
+            [FromBody] AddTrackingEventRequest request)
+        {
+            try
+            {
+                var shipment = await _shipmentService.AddTrackingEventAsync(trackingCode, request);
+
+                if (shipment == null)
+                {
+                    return NotFound(new { message = "Shipment not found." });
+                }
+
+                var response = MapToDetailsResponse(shipment);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding tracking event for {TrackingCode}", trackingCode);
+                return StatusCode(500, new { message = "An error occurred while updating the shipment." });
+            }
+        }
+
+        // helper to build detail response
+        private static ShipmentDetailsResponse MapToDetailsResponse(Shipment shipment)
+        {
+            return new ShipmentDetailsResponse
+            {
+                TrackingCode = shipment.TrackingCode,
+                Status = shipment.Status,
+                SenderName = shipment.SenderName,
+                SenderPhone = shipment.SenderPhone,
+                ReceiverName = shipment.ReceiverName,
+                ReceiverPhone = shipment.ReceiverPhone,
+                OriginBranchName = shipment.OriginBranch.Name,
+                DestinationBranchName = shipment.DestinationBranch.Name,
+                CreatedAt = shipment.CreatedAt,
+                Events = shipment.Events.Select(e => new TrackingEventResponse
+                {
+                    Status = e.Status.ToString(),
+                    Description = e.Description,
+                    CreatedAt = e.CreatedAt,
+                    Lat = e.Lat,
+                    Lng = e.Lng,
+                    LocationText = e.LocationText
+                }).ToList()
+            };
         }
     }
 }

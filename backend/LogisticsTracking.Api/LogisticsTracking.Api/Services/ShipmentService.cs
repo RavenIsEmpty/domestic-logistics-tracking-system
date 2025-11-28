@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using LogisticsTracking.Api.Data;
 using LogisticsTracking.Api.Dtos;
 using LogisticsTracking.Api.Entities;
@@ -12,6 +13,10 @@ namespace LogisticsTracking.Api.Services
     {
         Task<Shipment> CreateShipmentAsync(CreateShipmentRequest request);
         Task<Shipment?> GetByTrackingCodeAsync(string trackingCode);
+
+        // ✅ NEW
+        Task<List<Shipment>> GetShipmentsAsync(ShipmentStatus? status = null);
+        Task<Shipment?> AddTrackingEventAsync(string trackingCode, AddTrackingEventRequest request);
     }
 
     public class ShipmentService : IShipmentService
@@ -82,6 +87,62 @@ namespace LogisticsTracking.Api.Services
                 return null;
 
             // sort events by time
+            shipment.Events = shipment.Events
+                .OrderBy(e => e.CreatedAt)
+                .ToList();
+
+            return shipment;
+        }
+
+        // ✅ NEW: list shipments for admin (optionally filter by status)
+        public async Task<List<Shipment>> GetShipmentsAsync(ShipmentStatus? status = null)
+        {
+            var query = _db.Shipments
+                .Include(s => s.OriginBranch)
+                .Include(s => s.DestinationBranch)
+                .AsQueryable();
+
+            if (status.HasValue)
+            {
+                query = query.Where(s => s.Status == status.Value);
+            }
+
+            return await query
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(100) // simple limit for now
+                .ToListAsync();
+        }
+
+        // ✅ NEW: add tracking event + update shipment status
+        public async Task<Shipment?> AddTrackingEventAsync(string trackingCode, AddTrackingEventRequest request)
+        {
+            var shipment = await _db.Shipments
+                .Include(s => s.OriginBranch)
+                .Include(s => s.DestinationBranch)
+                .Include(s => s.Events)
+                .FirstOrDefaultAsync(s => s.TrackingCode == trackingCode);
+
+            if (shipment == null)
+            {
+                return null;
+            }
+
+            var trackingEvent = new TrackingEvent
+            {
+                ShipmentId = shipment.Id,
+                Status = request.Status,
+                Description = request.Description,
+                CreatedAt = DateTime.UtcNow,
+                Lat = request.Lat,
+                Lng = request.Lng,
+                LocationText = request.LocationText
+            };
+
+            shipment.Status = request.Status;
+            shipment.Events.Add(trackingEvent);
+
+            await _db.SaveChangesAsync();
+
             shipment.Events = shipment.Events
                 .OrderBy(e => e.CreatedAt)
                 .ToList();

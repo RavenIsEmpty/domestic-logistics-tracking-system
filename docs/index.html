@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen">
-  <div class="max-w-5xl mx-auto py-10 px-4">
+  <div class="max-w-6xl mx-auto py-10 px-4">
     <h1 class="text-3xl font-bold mb-6 text-sky-700">
       Domestic Logistics Tracking – Cambodia (Demo)
     </h1>
@@ -26,7 +26,7 @@
     <div class="grid md:grid-cols-2 gap-6">
       <!-- Create Shipment -->
       <section class="bg-white shadow rounded p-4">
-        <h2 class="text-xl font-semibold mb-3">Create Shipment</h2>
+        <h2 class="text-xl font-semibold mb-3">Admin / Cashier – Create Shipment</h2>
 
         <div class="space-y-2">
           <input id="senderName" class="border rounded px-3 py-2 w-full" placeholder="Sender name" />
@@ -47,9 +47,9 @@
 
       <!-- Track Shipment -->
       <section class="bg-white shadow rounded p-4">
-        <h2 class="text-xl font-semibold mb-3">Track Shipment</h2>
+        <h2 class="text-xl font-semibold mb-3">Customer – Track Shipment</h2>
 
-        <div class="flex gap-2">
+        <div class="flex gap-2 mb-2">
           <input id="trackCode" class="border rounded px-3 py-2 flex-1" placeholder="Tracking code (e.g. KH-...)" />
           <button onclick="trackShipment()"
                   class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded">
@@ -58,6 +58,77 @@
         </div>
 
         <div id="trackResult" class="mt-4 text-sm"></div>
+      </section>
+    </div>
+
+    <!-- Second row: Admin list + Driver update -->
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+      <!-- Admin list shipments -->
+      <section class="bg-white shadow rounded p-4">
+        <h2 class="text-xl font-semibold mb-3">Admin – List Shipments</h2>
+
+        <div class="flex items-center gap-2 mb-3">
+          <label class="text-sm">Status filter:</label>
+          <select id="statusFilter" class="border rounded px-2 py-1 text-sm">
+            <option value="">All</option>
+            <option value="0">Pending</option>
+            <option value="1">InTransit</option>
+            <option value="2">Delivered</option>
+            <option value="3">Cancelled</option>
+          </select>
+          <button onclick="loadShipments()"
+                  class="bg-slate-700 hover:bg-slate-800 text-white text-sm font-semibold px-3 py-1.5 rounded">
+            Load
+          </button>
+        </div>
+
+        <div id="shipmentsTable" class="text-xs overflow-x-auto"></div>
+      </section>
+
+      <!-- Driver update status -->
+      <section class="bg-white shadow rounded p-4">
+        <h2 class="text-xl font-semibold mb-3">Driver – Update Status / Add Event</h2>
+
+        <p class="text-xs text-gray-500 mb-2">
+          Uses the same tracking code as above. You can type it or use the one auto-filled from "Create Shipment".
+        </p>
+
+        <div class="space-y-2">
+          <input id="eventTrackingCode"
+                 class="border rounded px-3 py-2 w-full"
+                 placeholder="Tracking code (leave blank to use above value)" />
+
+          <select id="eventStatus" class="border rounded px-3 py-2 w-full">
+            <option value="0">Pending</option>
+            <option value="1">InTransit</option>
+            <option value="2">Delivered</option>
+            <option value="3">Cancelled</option>
+          </select>
+
+          <input id="eventDescription"
+                 class="border rounded px-3 py-2 w-full"
+                 placeholder="Description (e.g. Departed from origin branch)" />
+
+          <input id="eventLocationText"
+                 class="border rounded px-3 py-2 w-full"
+                 placeholder="Location text (optional, e.g. Phnom Penh Branch)" />
+
+          <div class="grid grid-cols-2 gap-2">
+            <input id="eventLat"
+                   class="border rounded px-3 py-2 w-full"
+                   placeholder="Lat (optional)" />
+            <input id="eventLng"
+                   class="border rounded px-3 py-2 w-full"
+                   placeholder="Lng (optional)" />
+          </div>
+        </div>
+
+        <button onclick="addEvent()"
+                class="mt-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded">
+          Add Event / Update Status
+        </button>
+
+        <div id="eventResult" class="mt-4 text-xs text-gray-800"></div>
       </section>
     </div>
   </div>
