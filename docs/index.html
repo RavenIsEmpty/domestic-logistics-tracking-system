@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>DLTS Cambodia – Demo UI</title>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="max-w-5xl mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold mb-6 text-sky-700">
+      Domestic Logistics Tracking – Cambodia (Demo)
+    </h1>
+
+    <!-- API base URL config -->
+    <div class="mb-6 p-4 bg-white shadow rounded">
+      <label class="block text-sm font-medium mb-1">API Base URL</label>
+      <input id="apiBaseUrl" class="border rounded px-3 py-2 w-full"
+             value="https://localhost:7111" />
+      <p class="text-xs text-gray-500 mt-1">
+        Put your API URL here, e.g.
+        <code>https://localhost:7111</code> (copy from Swagger address bar, remove <code>/swagger</code>).
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Create Shipment -->
+      <section class="bg-white shadow rounded p-4">
+        <h2 class="text-xl font-semibold mb-3">Create Shipment</h2>
+
+        <div class="space-y-2">
+          <input id="senderName" class="border rounded px-3 py-2 w-full" placeholder="Sender name" />
+          <input id="senderPhone" class="border rounded px-3 py-2 w-full" placeholder="Sender phone" />
+          <input id="receiverName" class="border rounded px-3 py-2 w-full" placeholder="Receiver name" />
+          <input id="receiverPhone" class="border rounded px-3 py-2 w-full" placeholder="Receiver phone" />
+          <input id="originBranchId" class="border rounded px-3 py-2 w-full" placeholder="Origin branch ID (e.g. 1)" />
+          <input id="destinationBranchId" class="border rounded px-3 py-2 w-full" placeholder="Destination branch ID (e.g. 2)" />
+        </div>
+
+        <button onclick="createShipment()"
+                class="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-semibold px-4 py-2 rounded">
+          Create
+        </button>
+
+        <pre id="createResult" class="mt-4 text-xs bg-slate-900 text-slate-100 p-3 rounded overflow-x-auto"></pre>
+      </section>
+
+      <!-- Track Shipment -->
+      <section class="bg-white shadow rounded p-4">
+        <h2 class="text-xl font-semibold mb-3">Track Shipment</h2>
+
+        <div class="flex gap-2">
+          <input id="trackCode" class="border rounded px-3 py-2 flex-1" placeholder="Tracking code (e.g. KH-...)" />
+          <button onclick="trackShipment()"
+                  class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded">
+            Track
+          </button>
+        </div>
+
+        <div id="trackResult" class="mt-4 text-sm"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -14,6 +14,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Shipment service
 builder.Services.AddScoped<IShipmentService, ShipmentService>();
 
+// ✅ CORS: allow all origins (for development)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -26,6 +38,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// ✅ Use CORS before Authorization
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 

@@ -1,4 +1,7 @@
-﻿using LogisticsTracking.Api.Data;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using LogisticsTracking.Api.Data;
 using LogisticsTracking.Api.Dtos;
 using LogisticsTracking.Api.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +11,7 @@ namespace LogisticsTracking.Api.Services
     public interface IShipmentService
     {
         Task<Shipment> CreateShipmentAsync(CreateShipmentRequest request);
+        Task<Shipment?> GetByTrackingCodeAsync(string trackingCode);
     }
 
     public class ShipmentService : IShipmentService
@@ -62,6 +66,25 @@ namespace LogisticsTracking.Api.Services
             await _db.SaveChangesAsync();
 
             _logger.LogInformation("Created shipment {TrackingCode} with Id {Id}", shipment.TrackingCode, shipment.Id);
+
+            return shipment;
+        }
+
+        public async Task<Shipment?> GetByTrackingCodeAsync(string trackingCode)
+        {
+            var shipment = await _db.Shipments
+                .Include(s => s.OriginBranch)
+                .Include(s => s.DestinationBranch)
+                .Include(s => s.Events)
+                .FirstOrDefaultAsync(s => s.TrackingCode == trackingCode);
+
+            if (shipment == null)
+                return null;
+
+            // sort events by time
+            shipment.Events = shipment.Events
+                .OrderBy(e => e.CreatedAt)
+                .ToList();
 
             return shipment;
         }
