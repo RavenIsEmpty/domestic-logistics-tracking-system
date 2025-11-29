@@ -3,6 +3,25 @@ function getApiBaseUrl() {
 }
 
 // ======================
+// Helpers
+// ======================
+function formatDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleString(); // browser locale
+}
+
+function statusText(value) {
+  switch (value) {
+    case 0: return "Pending";
+    case 1: return "InTransit";
+    case 2: return "Delivered";
+    case 3: return "Cancelled";
+    default: return String(value);
+  }
+}
+
+// ======================
 // Admin: Create shipment
 // ======================
 async function createShipment() {
@@ -44,6 +63,79 @@ async function createShipment() {
 }
 
 // ======================
+// Admin: Cancel shipment
+// ======================
+async function cancelShipment() {
+  const baseUrl = getApiBaseUrl();
+  const trackingCode = document.getElementById("cancelTrackingCode").value.trim();
+  const reason = document.getElementById("cancelReason").value.trim();
+  const resultEl = document.getElementById("cancelResult");
+
+  // reset text style
+  resultEl.className = "text-xs mt-1";
+
+  if (!baseUrl) {
+    resultEl.textContent = "Please enter API Base URL first.";
+    resultEl.className += " text-red-600";
+    return;
+  }
+
+  if (!trackingCode) {
+    resultEl.textContent = "Please enter a tracking code.";
+    resultEl.className += " text-red-600";
+    return;
+  }
+
+  resultEl.textContent = "Cancelling...";
+
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/Shipments/${encodeURIComponent(trackingCode)}/cancel`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reason: reason || null
+        })
+      }
+    );
+
+    if (!res.ok) {
+      let errMsg = "Failed to cancel shipment.";
+      try {
+        const err = await res.json();
+        if (err && err.message) errMsg = err.message;
+      } catch (_) {}
+
+      resultEl.textContent = errMsg;
+      resultEl.className += " text-red-600";
+      return;
+    }
+
+    const data = await res.json();
+    console.log("Cancel result:", data);
+
+    resultEl.textContent = "Shipment cancelled successfully.";
+    resultEl.className += " text-green-600";
+
+    // if the tracked shipment is the same, refresh customer view
+    const currentTrackCode = document.getElementById("trackCode").value.trim();
+    if (currentTrackCode && currentTrackCode === trackingCode) {
+      document.getElementById("trackResult").innerHTML = buildDetailsHtml(data);
+    }
+
+    // reload admin list if function exists
+    if (typeof loadShipments === "function") {
+      loadShipments();
+    }
+  } catch (err) {
+    console.error(err);
+    resultEl.textContent = "Error: " + err;
+    resultEl.className += " text-red-600";
+  }
+}
+
+// ======================
 // Customer: Track shipment
 // ======================
 async function trackShipment() {
@@ -68,24 +160,50 @@ async function trackShipment() {
   }
 }
 
+// Build details block (customer + cancel + driver use this)
 function buildDetailsHtml(data) {
-  const eventsHtml = data.events && data.events.length
-    ? data.events.map(ev => `
+  const events = Array.isArray(data.events) ? [...data.events] : [];
+
+  // sort by createdAt (just in case)
+  events.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+  const latest = events.length ? events[events.length - 1] : null;
+
+  const latestHtml = latest
+    ? `<p class="text-sm mt-1">
+         <span class="font-semibold">Latest update:</span>
+         ${statusText(latest.status)} – ${latest.description}
+         <span class="text-xs text-gray-500">(${formatDate(latest.createdAt)})</span>
+       </p>`
+    : "";
+
+  const eventsHtml = events.length
+    ? events
+        .map(
+          ev => `
         <li class="mb-1">
-          <span class="font-semibold">${ev.status}</span> –
+          <span class="font-semibold">${statusText(ev.status)}</span> –
           ${ev.description}
-          <span class="text-xs text-gray-500">(${ev.createdAt})</span>
-          ${ev.locationText ? `<span class="text-xs text-gray-400"> @ ${ev.locationText}</span>` : ""}
+          <span class="text-xs text-gray-500">(${formatDate(ev.createdAt)})</span>
+          ${
+            ev.locationText
+              ? `<span class="text-xs text-gray-400"> @ ${ev.locationText}</span>`
+              : ""
+          }
         </li>
-      `).join("")
+      `
+        )
+        .join("")
     : "<li>No events</li>";
 
   return `
     <div class="border rounded p-3 bg-slate-50">
       <p><span class="font-semibold">Tracking:</span> ${data.trackingCode}</p>
-      <p><span class="font-semibold">Status:</span> ${data.status}</p>
+      <p><span class="font-semibold">Status:</span> ${statusText(data.status)} (${data.status})</p>
       <p><span class="font-semibold">From:</span> ${data.originBranchName}</p>
       <p><span class="font-semibold">To:</span> ${data.destinationBranchName}</p>
+      <p><span class="font-semibold">Created:</span> ${formatDate(data.createdAt)}</p>
+      ${latestHtml}
       <p class="mt-2 font-semibold">Events:</p>
       <ul class="list-disc list-inside text-sm">
         ${eventsHtml}
@@ -122,7 +240,9 @@ async function loadShipments() {
       return;
     }
 
-    const rows = data.map(s => `
+    const rows = data
+      .map(
+        s => `
       <tr class="border-b">
         <td class="px-2 py-1">${s.id}</td>
         <td class="px-2 py-1">${s.trackingCode}</td>
@@ -130,9 +250,11 @@ async function loadShipments() {
         <td class="px-2 py-1">${s.originBranchName}</td>
         <td class="px-2 py-1">${s.destinationBranchName}</td>
         <td class="px-2 py-1">${s.assignedDriverId ?? ""}</td>
-        <td class="px-2 py-1 text-[10px]">${s.createdAt}</td>
+        <td class="px-2 py-1 text-[10px]">${formatDate(s.createdAt)}</td>
       </tr>
-    `).join("");
+    `
+      )
+      .join("");
 
     tableEl.innerHTML = `
       <table class="min-w-full text-left border text-[11px]">
@@ -154,16 +276,6 @@ async function loadShipments() {
     `;
   } catch (err) {
     tableEl.textContent = "Error: " + err;
-  }
-}
-
-function statusText(value) {
-  switch (value) {
-    case 0: return "Pending";
-    case 1: return "InTransit";
-    case 2: return "Delivered";
-    case 3: return "Cancelled";
-    default: return String(value);
   }
 }
 
@@ -198,11 +310,14 @@ async function addEvent() {
   resultEl.textContent = "Loading...";
 
   try {
-    const res = await fetch(`${baseUrl}/api/Shipments/${encodeURIComponent(trackingCode)}/events`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
+    const res = await fetch(
+      `${baseUrl}/api/Shipments/${encodeURIComponent(trackingCode)}/events`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({}));
@@ -211,7 +326,7 @@ async function addEvent() {
     }
 
     const data = await res.json();
-    resultEl.textContent = "Event added. Current status: " + data.status;
+    resultEl.textContent = "Event added. Current status: " + statusText(data.status);
 
     // refresh customer view if same tracking code is there
     if (document.getElementById("trackCode").value.trim() === trackingCode) {
