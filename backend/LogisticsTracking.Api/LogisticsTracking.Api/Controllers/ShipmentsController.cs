@@ -18,6 +18,11 @@ namespace LogisticsTracking.Api.Controllers
             _logger = logger;
         }
 
+        public class CancelShipmentRequest
+        {
+            public string? Reason { get; set; }
+        }
+
         // POST api/Shipments
         [HttpPost]
         public async Task<ActionResult<ShipmentResponse>> CreateShipment([FromBody] CreateShipmentRequest request)
@@ -140,6 +145,42 @@ namespace LogisticsTracking.Api.Controllers
                 return StatusCode(500, new { message = "An error occurred while updating the shipment." });
             }
         }
+
+        // ✅ NEW: cancel shipment (Admin)
+        // POST api/Shipments/{trackingCode}/cancel
+        [HttpPost("{trackingCode}/cancel")]
+        public async Task<ActionResult<ShipmentDetailsResponse>> Cancel(
+            string trackingCode,
+            [FromBody] CancelShipmentRequest? request)
+        {
+            try
+            {
+                var shipment = await _shipmentService.CancelShipmentAsync(
+                    trackingCode,
+                    request?.Reason
+                );
+
+                if (shipment == null)
+                {
+                    return NotFound(new { message = "Shipment not found." });
+                }
+
+                var response = MapToDetailsResponse(shipment);
+                return Ok(response);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // e.g. cannot cancel delivered / already cancelled
+                _logger.LogWarning(ex, "Validation error when cancelling shipment {TrackingCode}", trackingCode);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error cancelling shipment {TrackingCode}", trackingCode);
+                return StatusCode(500, new { message = "An error occurred while cancelling the shipment." });
+            }
+        }
+
 
         // helper to build detail response
         private static ShipmentDetailsResponse MapToDetailsResponse(Shipment shipment)

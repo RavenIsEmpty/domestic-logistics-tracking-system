@@ -14,10 +14,14 @@ namespace LogisticsTracking.Api.Services
         Task<Shipment> CreateShipmentAsync(CreateShipmentRequest request);
         Task<Shipment?> GetByTrackingCodeAsync(string trackingCode);
 
-        // ✅ NEW
+        // ✅ existing
         Task<List<Shipment>> GetShipmentsAsync(ShipmentStatus? status = null);
         Task<Shipment?> AddTrackingEventAsync(string trackingCode, AddTrackingEventRequest request);
+
+        // ✅ NEW: cancel shipment
+        Task<Shipment?> CancelShipmentAsync(string trackingCode, string? reason);
     }
+
 
     public class ShipmentService : IShipmentService
     {
@@ -146,6 +150,52 @@ namespace LogisticsTracking.Api.Services
             shipment.Events = shipment.Events
                 .OrderBy(e => e.CreatedAt)
                 .ToList();
+
+            return shipment;
+        }
+
+        // ✅ NEW: cancel shipment + add tracking event
+        public async Task<Shipment?> CancelShipmentAsync(string trackingCode, string? reason)
+        {
+            var shipment = await _db.Shipments
+                .Include(s => s.OriginBranch)
+                .Include(s => s.DestinationBranch)
+                .Include(s => s.Events)
+                .FirstOrDefaultAsync(s => s.TrackingCode == trackingCode);
+
+            if (shipment == null)
+            {
+                return null;
+            }
+
+            // prevent cancelling delivered/already cancelled shipments
+            if (shipment.Status == ShipmentStatus.Delivered || shipment.Status == ShipmentStatus.Cancelled)
+            {
+                throw new InvalidOperationException("Cannot cancel a delivered or already cancelled shipment.");
+            }
+
+            shipment.Status = ShipmentStatus.Cancelled;
+
+            var ev = new TrackingEvent
+            {
+                ShipmentId = shipment.Id,
+                Status = ShipmentStatus.Cancelled,
+                Description = string.IsNullOrWhiteSpace(reason)
+                    ? "Shipment cancelled by admin."
+                    : reason!,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            shipment.Events.Add(ev);
+
+            await _db.SaveChangesAsync();
+
+            // keep events sorted
+            shipment.Events = shipment.Events
+                .OrderBy(e => e.CreatedAt)
+                .ToList();
+
+            _logger.LogInformation("Cancelled shipment {TrackingCode}", shipment.TrackingCode);
 
             return shipment;
         }
