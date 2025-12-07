@@ -1,95 +1,214 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8" />
-    <title>Driver GPS Tracker</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        padding: 16px;
-      }
-      button {
-        padding: 10px 16px;
-        margin-right: 8px;
-      }
-      #status {
-        margin-top: 12px;
-        font-size: 14px;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>Driver GPS Tracker</h2>
+    <title>Driver GPS Tracker · DLTS Cambodia</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body class="min-h-screen bg-[#F7F8FC] text-[#1E1E1E]">
+    <!-- Top Bar -->
+    <header class="w-full shadow-sm">
+        <div class="flex items-center justify-between px-4 py-3"
+             style="background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%)">
+            <div class="flex items-center gap-2">
+                <div class="h-8 w-8 rounded-2xl bg-white/20 flex items-center justify-center text-white text-xs font-bold">
+                    DL
+                </div>
+                <div>
+                    <p class="text-xs text-white/80">Driver GPS Tester</p>
+                    <p class="text-sm font-semibold text-white">DLTS Cambodia</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-[11px] text-white/80">
+                <a href="driver.html" class="underline hidden sm:inline">
+                    Driver Panel
+                </a>
+                <a href="index.html" class="underline hidden sm:inline">
+                    Admin Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
 
-    <label>
-      Driver ID:
-      <input id="driverId" type="number" value="1" />
-    </label>
-    <br /><br />
+    <!-- Content -->
+    <main class="max-w-md mx-auto px-4 pt-5 pb-12 space-y-4">
+        <!-- Card -->
+        <section class="bg-white rounded-2xl shadow-sm p-4 space-y-4 text-xs">
+            <div class="space-y-1">
+                <h1 class="text-sm font-semibold">Driver GPS Tracker</h1>
+                <p class="text-[11px] text-gray-500">
+                    This page simulates a driver phone sending live GPS to the backend.
+                </p>
+            </div>
 
-    <button id="start">Start Sending GPS</button>
-    <button id="stop">Stop</button>
+            <!-- Tracking code + driver id -->
+            <div class="space-y-3">
+                <div class="space-y-1">
+                    <label class="text-[11px] text-gray-600">Tracking code (shipment)</label>
+                    <input id="trackingCode"
+                           type="text"
+                           value="KH-20251207-AB12CD"
+                           class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                           placeholder="e.g. KH-20251207-AB12CD" />
+                    <p class="text-[10px] text-gray-400">
+                        This shipment will receive GPS events.
+                    </p>
+                </div>
 
-    <div id="status">Not started</div>
+                <div class="space-y-1">
+                    <label class="text-[11px] text-gray-600">Driver ID (demo)</label>
+                    <input id="driverId"
+                           type="number"
+                           value="1"
+                           class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]" />
+                    <p class="text-[10px] text-gray-400">
+                        Optional label just for the status text (not stored in DB).
+                    </p>
+                </div>
+            </div>
 
+            <!-- Buttons -->
+            <div class="flex gap-2 pt-1">
+                <button id="start"
+                        class="flex-1 rounded-xl px-3 py-2 text-xs font-medium text-white shadow-md active:scale-[0.98]"
+                        style="
+              background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%);
+            ">
+                    Start sending GPS
+                </button>
+                <button id="stop"
+                        class="rounded-xl px-3 py-2 text-xs border border-gray-200 text-gray-600 hover:bg-gray-50">
+                    Stop
+                </button>
+            </div>
+
+            <!-- Status -->
+            <div id="status"
+                 class="mt-2 text-[11px] text-gray-500 bg-[#F7F8FC] rounded-xl px-3 py-2">
+                Not started
+            </div>
+
+            <p class="text-[10px] text-gray-400">
+                When started, this page uses
+                <span class="font-mono">navigator.geolocation</span> and sends a GPS
+                event every 30 seconds to
+                <span class="font-mono">/api/shipments/{trackingCode}/location</span>.
+            </p>
+        </section>
+    </main>
+
+    <!-- JS -->
     <script>
-      let timerId = null;
+        const statusEl = document.getElementById("status");
+        const startBtn = document.getElementById("start");
+        const stopBtn = document.getElementById("stop");
+        const trackingInput = document.getElementById("trackingCode");
+        const driverInput = document.getElementById("driverId");
 
-      async function sendGps() {
-        if (!navigator.geolocation) {
-          document.getElementById("status").innerText =
-            "Geolocation not supported";
-          return;
-        }
+        // Use the same host/port as this page
+        const API_BASE = window.location.origin;
+        let timerId = null;
 
-        navigator.geolocation.getCurrentPosition(
-          async (pos) => {
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
-            const driverId = parseInt(
-              document.getElementById("driverId").value || "1",
-              10
-            );
-
-            document.getElementById(
-              "status"
-            ).innerText = `Sending... Driver ${driverId} | Lat=${lat} Lng=${lng} (${new Date().toLocaleTimeString()})`;
-
-            try {
-              await fetch("https://YOUR-API-DOMAIN.com/api/gps/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ driverId, lat, lng }),
-              });
-            } catch (err) {
-              document.getElementById("status").innerText =
-                "Error sending GPS: " + err;
+        async function sendGpsOnce() {
+            if (!navigator.geolocation) {
+                statusEl.textContent = "Geolocation not supported on this device.";
+                return;
             }
-          },
-          (err) => {
-            document.getElementById("status").innerText =
-              "Location error: " + err.message;
-          },
-          {
-            enableHighAccuracy: true,
-          }
-        );
-      }
 
-      document.getElementById("start").onclick = () => {
-        if (timerId) return; // already running
-        sendGps(); // send once immediately
-        timerId = setInterval(sendGps, 30000); // every 30 seconds
-        document.getElementById("status").innerText = "Started sending GPS...";
-      };
+            const trackingCode = trackingInput.value.trim();
+            const driverId = driverInput.value || "1";
 
-      document.getElementById("stop").onclick = () => {
-        if (timerId) {
-          clearInterval(timerId);
-          timerId = null;
+            if (!trackingCode) {
+                statusEl.textContent = "Please enter a tracking code first.";
+                return;
+            }
+
+            statusEl.textContent = "Getting GPS position…";
+
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+
+                    const timeLabel = new Date().toLocaleTimeString();
+                    statusEl.textContent =
+                        "Sending… Driver " +
+                        driverId +
+                        " | " +
+                        "Lat=" +
+                        lat.toFixed(6) +
+                        " Lng=" +
+                        lng.toFixed(6) +
+                        " (" +
+                        timeLabel +
+                        ")";
+
+                    try {
+                        const res = await fetch(
+                            `${API_BASE}/api/shipments/${encodeURIComponent(
+                                trackingCode
+                            )}/location`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    lat: lat,
+                                    lng: lng,
+                                    locationText: `Driver ${driverId} GPS at ${timeLabel}`,
+                                }),
+                            }
+                        );
+
+                        if (!res.ok) {
+                            const text = await res.text();
+                            throw new Error(text || "Server returned an error");
+                        }
+
+                        statusEl.textContent =
+                            "Location sent ✅ (Driver " +
+                            driverId +
+                            ", " +
+                            lat.toFixed(6) +
+                            ", " +
+                            lng.toFixed(6) +
+                            " at " +
+                            timeLabel +
+                            ")";
+                    } catch (err) {
+                        console.error(err);
+                        statusEl.textContent = "Error sending GPS ❌: " + err.message;
+                    }
+                },
+                (err) => {
+                    statusEl.textContent = "Location error: " + err.message;
+                },
+                {
+                    enableHighAccuracy: true,
+                }
+            );
         }
-        document.getElementById("status").innerText = "Stopped";
-      };
+
+        startBtn.addEventListener("click", () => {
+            if (timerId) return; // already running
+
+            // send once immediately
+            sendGpsOnce();
+            // then every 30 seconds
+            timerId = setInterval(sendGpsOnce, 30000);
+            statusEl.textContent = "Started sending GPS every 30 seconds…";
+        });
+
+        stopBtn.addEventListener("click", () => {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+            }
+            statusEl.textContent = "Stopped.";
+        });
     </script>
-  </body>
+</body>
 </html>

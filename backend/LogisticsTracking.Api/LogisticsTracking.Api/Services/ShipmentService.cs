@@ -6,6 +6,7 @@ using LogisticsTracking.Api.Data;
 using LogisticsTracking.Api.Dtos;
 using LogisticsTracking.Api.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace LogisticsTracking.Api.Services
 {
@@ -18,10 +19,16 @@ namespace LogisticsTracking.Api.Services
         Task<List<Shipment>> GetShipmentsAsync(ShipmentStatus? status = null);
         Task<Shipment?> AddTrackingEventAsync(string trackingCode, AddTrackingEventRequest request);
 
-        // ✅ NEW: cancel shipment
+        // ✅ cancel shipment
         Task<Shipment?> CancelShipmentAsync(string trackingCode, string? reason);
-    }
 
+        // ✅ NEW: add GPS-only tracking event (used by /location)
+        Task<Shipment?> AddLocationEventAsync(
+            string trackingCode,
+            double lat,
+            double lng,
+            string? locationText);
+    }
 
     public class ShipmentService : IShipmentService
     {
@@ -98,7 +105,7 @@ namespace LogisticsTracking.Api.Services
             return shipment;
         }
 
-        // ✅ NEW: list shipments for admin (optionally filter by status)
+        // ✅ list shipments for admin (optionally filter by status)
         public async Task<List<Shipment>> GetShipmentsAsync(ShipmentStatus? status = null)
         {
             var query = _db.Shipments
@@ -117,7 +124,7 @@ namespace LogisticsTracking.Api.Services
                 .ToListAsync();
         }
 
-        // ✅ NEW: add tracking event + update shipment status
+        // ✅ add tracking event + update shipment status
         public async Task<Shipment?> AddTrackingEventAsync(string trackingCode, AddTrackingEventRequest request)
         {
             var shipment = await _db.Shipments
@@ -154,7 +161,56 @@ namespace LogisticsTracking.Api.Services
             return shipment;
         }
 
-        // ✅ NEW: cancel shipment + add tracking event
+        // ✅ NEW: GPS-only event (does NOT change main shipment status)
+        public async Task<Shipment?> AddLocationEventAsync(
+            string trackingCode,
+            double lat,
+            double lng,
+            string? locationText)
+        {
+            var shipment = await _db.Shipments
+                .Include(s => s.OriginBranch)
+                .Include(s => s.DestinationBranch)
+                .Include(s => s.Events)
+                .FirstOrDefaultAsync(s => s.TrackingCode == trackingCode);
+
+            if (shipment == null)
+            {
+                return null;
+            }
+
+            var ev = new TrackingEvent
+            {
+                ShipmentId = shipment.Id,
+                // keep whatever the current status is (Pending / InTransit / Delivered / Cancelled)
+                Status = shipment.Status,
+                Description = string.IsNullOrWhiteSpace(locationText)
+                    ? "Driver GPS update"
+                    : locationText!,
+                CreatedAt = DateTime.UtcNow,
+                Lat = lat,
+                Lng = lng,
+                LocationText = locationText
+            };
+
+            shipment.Events.Add(ev);
+
+            await _db.SaveChangesAsync();
+
+            shipment.Events = shipment.Events
+                .OrderBy(e => e.CreatedAt)
+                .ToList();
+
+            _logger.LogInformation(
+                "GPS update for {TrackingCode}: {Lat}, {Lng}",
+                shipment.TrackingCode,
+                lat,
+                lng);
+
+            return shipment;
+        }
+
+        // ✅ cancel shipment + add tracking event
         public async Task<Shipment?> CancelShipmentAsync(string trackingCode, string? reason)
         {
             var shipment = await _db.Shipments

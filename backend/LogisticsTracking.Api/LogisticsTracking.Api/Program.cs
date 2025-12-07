@@ -39,7 +39,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// ✅ Use CORS before Authorization
+// ✅ Serve static files from wwwroot (e.g. /demo/login.html)
+app.UseStaticFiles();
+
 app.UseCors("AllowAll");
 
 app.UseAuthorization();

@@ -23,6 +23,40 @@ namespace LogisticsTracking.Api.Controllers
             public string? Reason { get; set; }
         }
 
+        // ✅ NEW: driver GPS → /api/shipments/{trackingCode}/location
+        [HttpPost("{trackingCode}/location")]
+        public async Task<IActionResult> UpdateLocation(
+            string trackingCode,
+            [FromBody] UpdateLocationRequest request)
+        {
+            try
+            {
+                var shipment = await _shipmentService.AddLocationEventAsync(
+                    trackingCode,
+                    request.Lat,
+                    request.Lng,
+                    request.LocationText
+                );
+
+                if (shipment == null)
+                {
+                    return NotFound(new { message = "Shipment not found." });
+                }
+
+                // Driver page doesn't use the body, only the status code.
+                // 204 = success with no content.
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error updating GPS location for shipment {TrackingCode}",
+                    trackingCode);
+
+                return StatusCode(500, new { message = "An error occurred while updating shipment location." });
+            }
+        }
+
         // POST api/Shipments
         [HttpPost]
         public async Task<ActionResult<ShipmentResponse>> CreateShipment([FromBody] CreateShipmentRequest request)
@@ -55,7 +89,7 @@ namespace LogisticsTracking.Api.Controllers
             }
         }
 
-        // ✅ NEW: Admin list shipments (optional ?status=0/1/2)
+        // ✅ Admin list shipments (optional ?status=0/1/2)
         // GET api/Shipments?status=0
         [HttpGet]
         public async Task<ActionResult<List<ShipmentListItemResponse>>> GetShipments([FromQuery] int? status)
@@ -120,7 +154,7 @@ namespace LogisticsTracking.Api.Controllers
             }
         }
 
-        // ✅ NEW: add tracking event / update status (Driver or Admin)
+        // ✅ add tracking event / update status (Driver or Admin)
         // POST api/Shipments/{trackingCode}/events
         [HttpPost("{trackingCode}/events")]
         public async Task<ActionResult<ShipmentDetailsResponse>> AddEvent(
@@ -146,7 +180,7 @@ namespace LogisticsTracking.Api.Controllers
             }
         }
 
-        // ✅ NEW: cancel shipment (Admin)
+        // ✅ cancel shipment (Admin)
         // POST api/Shipments/{trackingCode}/cancel
         [HttpPost("{trackingCode}/cancel")]
         public async Task<ActionResult<ShipmentDetailsResponse>> Cancel(
@@ -180,7 +214,6 @@ namespace LogisticsTracking.Api.Controllers
                 return StatusCode(500, new { message = "An error occurred while cancelling the shipment." });
             }
         }
-
 
         // helper to build detail response
         private static ShipmentDetailsResponse MapToDetailsResponse(Shipment shipment)
