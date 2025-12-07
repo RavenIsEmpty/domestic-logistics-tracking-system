@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Driver GPS Tracker</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 16px;
+      }
+      button {
+        padding: 10px 16px;
+        margin-right: 8px;
+      }
+      #status {
+        margin-top: 12px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Driver GPS Tracker</h2>
+
+    <label>
+      Driver ID:
+      <input id="driverId" type="number" value="1" />
+    </label>
+    <br /><br />
+
+    <button id="start">Start Sending GPS</button>
+    <button id="stop">Stop</button>
+
+    <div id="status">Not started</div>
+
+    <script>
+      let timerId = null;
+
+      async function sendGps() {
+        if (!navigator.geolocation) {
+          document.getElementById("status").innerText =
+            "Geolocation not supported";
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            const driverId = parseInt(
+              document.getElementById("driverId").value || "1",
+              10
+            );
+
+            document.getElementById(
+              "status"
+            ).innerText = `Sending... Driver ${driverId} | Lat=${lat} Lng=${lng} (${new Date().toLocaleTimeString()})`;
+
+            try {
+              await fetch("https://YOUR-API-DOMAIN.com/api/gps/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ driverId, lat, lng }),
+              });
+            } catch (err) {
+              document.getElementById("status").innerText =
+                "Error sending GPS: " + err;
+            }
+          },
+          (err) => {
+            document.getElementById("status").innerText =
+              "Location error: " + err.message;
+          },
+          {
+            enableHighAccuracy: true,
+          }
+        );
+      }
+
+      document.getElementById("start").onclick = () => {
+        if (timerId) return; // already running
+        sendGps(); // send once immediately
+        timerId = setInterval(sendGps, 30000); // every 30 seconds
+        document.getElementById("status").innerText = "Started sending GPS...";
+      };
+
+      document.getElementById("stop").onclick = () => {
+        if (timerId) {
+          clearInterval(timerId);
+          timerId = null;
+        }
+        document.getElementById("status").innerText = "Stopped";
+      };
+    </script>
+  </body>
+</html>

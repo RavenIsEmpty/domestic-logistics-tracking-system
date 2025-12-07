@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login - DLTS Cambodia</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lordicon player -->
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body
+    class="min-h-screen bg-[#F7F8FC] text-[#1E1E1E] flex items-center justify-center"
+  >
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="
+        background: radial-gradient(
+            circle at 0% 0%,
+            rgba(79, 140, 255, 0.16),
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(138, 91, 255, 0.18),
+            transparent 55%
+          );
+      "
+    ></div>
+
+    <main class="relative z-10 w-full max-w-md px-4">
+      <div
+        class="bg-white/90 backdrop-blur rounded-3xl shadow-xl px-5 py-6 sm:px-7 sm:py-8 space-y-6"
+      >
+        <!-- Brand -->
+        <header class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div
+              class="h-9 w-9 rounded-2xl bg-gradient-to-tr from-[#4F8CFF] to-[#8A5BFF] flex items-center justify-center text-white text-sm font-bold"
+            >
+              DL
+            </div>
+            <div>
+              <p class="text-sm font-semibold">DLTS Cambodia</p>
+              <p class="text-[10px] text-gray-500">
+                Domestic Logistic Tracking System
+              </p>
+            </div>
+          </div>
+
+          <!-- Animated icon (small, looping) -->
+          <lord-icon
+            src="https://cdn.lordicon.com/lbjtvqiv.json"
+            trigger="loop"
+            delay="1500"
+            style="width: 32px; height: 32px"
+          >
+          </lord-icon>
+        </header>
+
+        <!-- Title -->
+        <section class="space-y-1">
+          <h1 class="text-lg font-semibold">
+            Welcome back
+            <span class="align-middle">👋</span>
+          </h1>
+          <p class="text-[11px] text-gray-500">
+            Sign in as
+            <span class="font-medium">Admin / Cashier / Driver</span> to manage
+            shipments.
+          </p>
+        </section>
+
+        <!-- Login form -->
+        <form id="loginForm" class="space-y-4 text-xs">
+          <div class="space-y-1">
+            <label class="text-[11px] text-gray-600">Username or phone</label>
+            <input
+              name="username"
+              required
+              class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+              placeholder="e.g. admin01 or 0xx xxx xxx"
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] text-gray-600">Password</label>
+            <input
+              type="password"
+              name="password"
+              required
+              class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] text-gray-600">Login as</label>
+            <select
+              name="role"
+              class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+            >
+              <option value="admin">Admin / Cashier</option>
+              <option value="driver">Driver</option>
+              <option value="customer">Customer tracking only</option>
+            </select>
+          </div>
+
+          <div
+            class="flex items-center justify-between text-[10px] text-gray-500"
+          >
+            <label
+              class="inline-flex items-center gap-1 cursor-pointer select-none"
+            >
+              <input type="checkbox" class="h-3 w-3 rounded border-gray-300" />
+              <span>Remember me on this device</span>
+            </label>
+            <span class="text-[#4F8CFF] cursor-default"
+              >Demo login (no real auth)</span
+            >
+          </div>
+
+          <button
+            type="submit"
+            class="w-full mt-1 py-2 rounded-xl text-xs font-medium text-white shadow-md flex items-center justify-center gap-2"
+            style="
+              background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%);
+            "
+          >
+            <span>Sign in</span>
+            <lord-icon
+              src="https://cdn.lordicon.com/lewtedlh.json"
+              trigger="loop"
+              delay="2000"
+              style="width: 18px; height: 18px"
+            >
+            </lord-icon>
+          </button>
+        </form>
+
+        <!-- Customer quick access -->
+        <section class="pt-1 border-t border-gray-100 text-[11px] space-y-2">
+          <p class="text-gray-500">Just want to track a shipment?</p>
+          <a
+            href="tracking.html"
+            class="w-full inline-flex items-center justify-center px-3 py-2 rounded-xl bg-[#F7F8FC] text-[11px] text-[#4F8CFF] hover:bg-[#E8ECFF] gap-2"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/fttvwdlw.json"
+              trigger="loop"
+              delay="1500"
+              style="width: 20px; height: 20px"
+            >
+            </lord-icon>
+            <span>Open public tracking page</span>
+          </a>
+        </section>
+      </div>
+
+      <p class="mt-4 text-center text-[10px] text-gray-400">
+        DLTS Cambodia · Final Project · WU-B20
+      </p>
+    </main>
+
+    <!-- Front-end only routing logic -->
+    <script>
+      const loginForm = document.getElementById("loginForm");
+
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const data = new FormData(loginForm);
+        const role = data.get("role") || "admin";
+
+        let target = "index.html";
+        if (role === "driver") target = "driver.html";
+        if (role === "customer") target = "tracking.html";
+
+        window.location.href = target;
+      });
+    </script>
+  </body>
+</html>

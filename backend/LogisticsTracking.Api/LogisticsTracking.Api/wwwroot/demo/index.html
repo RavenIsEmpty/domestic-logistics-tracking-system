@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DLTS Cambodia - Gen-Z Dashboard</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lordicon player -->
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  </head>
+  <body class="min-h-screen bg-[#F7F8FC] text-[#1E1E1E]">
+    <!-- Top Navbar with Gradient -->
+    <header class="w-full shadow-sm">
+      <div
+        class="flex items-center justify-between px-6 py-3"
+        style="background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%)"
+      >
+        <div class="flex items-center gap-2">
+          <div
+            class="h-9 w-9 rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-lg"
+          >
+            DL
+          </div>
+          <div>
+            <h1 class="text-white font-semibold text-lg">DLTS Cambodia</h1>
+            <p class="text-xs text-white/80">
+              Domestic Logistic Tracking – Gen-Z UI
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 text-xs text-white/80">
+          <a href="login.html" class="underline hidden sm:inline">Logout</a>
+          <span class="text-white text-sm hidden sm:inline">Hello, Admin</span>
+          <div class="flex items-center gap-3">
+            <img
+              src="https://ui-avatars.com/api/?name=Admin&background=8A5BFF&color=fff"
+              alt="avatar"
+              class="h-9 w-9 rounded-full border border-white/60"
+            />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="flex">
+      <!-- Sidebar -->
+      <aside class="hidden md:block w-60 bg-white shadow-sm min-h-screen pt-6">
+        <nav class="px-4 space-y-2 text-sm">
+          <p
+            class="px-2 text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2"
+          >
+            Main
+          </p>
+
+          <!-- Dashboard -->
+          <button
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-[#4F8CFF]/10 text-[#4F8CFF] font-medium"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/lewtedlh.json"
+              trigger="loop"
+              delay="1500"
+              style="width: 20px; height: 20px"
+            >
+            </lord-icon>
+            Dashboard
+          </button>
+
+          <!-- Create Shipment -->
+          <a
+            href="create-shipment.html"
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/lbjtvqiv.json"
+              trigger="loop"
+              delay="1200"
+              style="width: 20px; height: 20px"
+            >
+            </lord-icon>
+            Create Shipment
+          </a>
+
+          <!-- Driver View -->
+          <a
+            href="driver.html"
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/fttvwdlw.json"
+              trigger="loop"
+              delay="1800"
+              style="width: 20px; height: 20px"
+            >
+            </lord-icon>
+            Driver View
+          </a>
+
+          <!-- Tracking Page -->
+          <a
+            href="tracking.html"
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/lewtedlh.json"
+              trigger="loop"
+              delay="2200"
+              style="width: 20px; height: 20px"
+            >
+            </lord-icon>
+            Tracking Page
+          </a>
+
+          <p
+            class="px-2 text-[11px] font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-2"
+          >
+            System
+          </p>
+
+          <!-- Branches -->
+          <button
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/lbjtvqiv.json"
+              trigger="loop"
+              delay="1900"
+              style="width: 20px; height: 20px"
+            >
+            </lord-icon>
+            Branches
+          </button>
+
+          <!-- Users -->
+          <button
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/fttvwdlw.json"
+              trigger="loop"
+              delay="2100"
+              style="width: 20px; height: 20px"
+            >
+            </lord-icon>
+            Users
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <main class="flex-1 p-4 md:p-6 space-y-5">
+        <!-- Row 1: Search + Quick Stats -->
+        <section class="space-y-4">
+          <!-- Search / Filter Bar -->
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-3"
+          >
+            <div>
+              <h2 class="text-lg font-semibold">Shipment Overview</h2>
+              <p class="text-xs text-gray-500">
+                Monitor domestic parcels across Cambodia in real time.
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <div
+                class="flex items-center bg-white px-3 py-2 rounded-xl shadow-sm"
+              >
+                <input
+                  type="text"
+                  placeholder="Search by tracking code…"
+                  class="w-48 sm:w-64 text-xs outline-none"
+                />
+              </div>
+              <button
+                class="px-4 py-2 rounded-xl text-xs font-medium text-white shadow-md"
+                style="
+                  background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%);
+                "
+              >
+                + New Shipment
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div class="bg-white rounded-2xl p-3 shadow-sm flex flex-col gap-1">
+              <span class="text-gray-500">Total Today</span>
+              <span class="text-xl font-semibold">128</span>
+              <span class="text-[10px] text-emerald-500">+12 vs yesterday</span>
+            </div>
+
+            <div class="bg-white rounded-2xl p-3 shadow-sm flex flex-col gap-1">
+              <span class="text-gray-500">In Transit</span>
+              <span class="text-xl font-semibold text-[#36E3FF]">64</span>
+              <span
+                class="inline-flex items-center self-start px-2 py-[2px] rounded-full text-[10px] bg-[#36E3FF]/10 text-[#0288D1]"
+              >
+                Live GPS
+              </span>
+            </div>
+
+            <div class="bg-white rounded-2xl p-3 shadow-sm flex flex-col gap-1">
+              <span class="text-gray-500">Delivered</span>
+              <span class="text-xl font-semibold text-[#7CF77D]">51</span>
+              <span class="text-[10px] text-gray-400">Before 18:00</span>
+            </div>
+
+            <div class="bg-white rounded-2xl p-3 shadow-sm flex flex-col gap-1">
+              <span class="text-gray-500">Issues</span>
+              <span class="text-xl font-semibold text-[#FF4F7B]">13</span>
+              <span
+                class="inline-flex items-center self-start px-2 py-[2px] rounded-full text-[10px] bg-[#FFB26B]/20 text-[#FF8F3C]"
+              >
+                Delays & Cancelled
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Row 2: Table + Tracking Timeline -->
+        <section class="grid lg:grid-cols-3 gap-4">
+          <!-- Shipments Table -->
+          <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm p-3 md:p-4">
+            <div class="flex items-center justify-between mb-3 text-xs">
+              <h3 class="font-semibold text-sm">Recent Shipments</h3>
+              <div class="flex gap-2">
+                <button
+                  class="px-2 py-[3px] rounded-full bg-gray-100 text-[10px]"
+                >
+                  All
+                </button>
+                <button
+                  class="px-2 py-[3px] rounded-full bg-[#36E3FF]/10 text-[10px] text-[#0288D1]"
+                >
+                  In Transit
+                </button>
+                <button
+                  class="px-2 py-[3px] rounded-full bg-[#7CF77D]/10 text-[10px] text-[#2F9A3F]"
+                >
+                  Delivered
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs">
+                <thead>
+                  <tr class="text-left text-[11px] text-gray-400 border-b">
+                    <th class="py-2">Tracking Code</th>
+                    <th class="py-2">Route</th>
+                    <th class="py-2">Status</th>
+                    <th class="py-2">Driver</th>
+                    <th class="py-2 text-right">Updated</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y text-[11px]">
+                  <!-- Row 1 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-2 font-medium text-[#4F8CFF]">
+                      KH-20251207-AB12CD
+                    </td>
+                    <td class="py-2 text-gray-600">Phnom Penh → Siem Reap</td>
+                    <td class="py-2">
+                      <span
+                        class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#36E3FF]/10 text-[#0288D1]"
+                      >
+                        <span
+                          class="h-2 w-2 rounded-full bg-[#36E3FF] mr-1"
+                        ></span>
+                        In Transit
+                      </span>
+                    </td>
+                    <td class="py-2 text-gray-600">Dara</td>
+                    <td class="py-2 text-right text-gray-400">5 min ago</td>
+                  </tr>
+
+                  <!-- Row 2 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-2 font-medium text-[#4F8CFF]">
+                      KH-20251207-XY98ZT
+                    </td>
+                    <td class="py-2 text-gray-600">PP → Battambang</td>
+                    <td class="py-2">
+                      <span
+                        class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#7CF77D]/10 text-[#2F9A3F]"
+                      >
+                        <span
+                          class="h-2 w-2 rounded-full bg-[#7CF77D] mr-1"
+                        ></span>
+                        Delivered
+                      </span>
+                    </td>
+                    <td class="py-2 text-gray-600">Sokha</td>
+                    <td class="py-2 text-right text-gray-400">30 min ago</td>
+                  </tr>
+
+                  <!-- Row 3 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-2 font-medium text-[#4F8CFF]">
+                      KH-20251206-QR45MN
+                    </td>
+                    <td class="py-2 text-gray-600">PP → Kampong Thom</td>
+                    <td class="py-2">
+                      <span
+                        class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#FFB26B]/20 text-[#FF8F3C]"
+                      >
+                        <span
+                          class="h-2 w-2 rounded-full bg-[#FFB26B] mr-1"
+                        ></span>
+                        Delay
+                      </span>
+                    </td>
+                    <td class="py-2 text-gray-600">Rith</td>
+                    <td class="py-2 text-right text-gray-400">1 hr ago</td>
+                  </tr>
+
+                  <!-- Row 4 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-2 font-medium text-[#4F8CFF]">
+                      KH-20251206-CX77OP
+                    </td>
+                    <td class="py-2 text-gray-600">PP → Takeo</td>
+                    <td class="py-2">
+                      <span
+                        class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#FF4F7B]/10 text-[#FF4F7B]"
+                      >
+                        <span
+                          class="h-2 w-2 rounded-full bg-[#FF4F7B] mr-1"
+                        ></span>
+                        Cancelled
+                      </span>
+                    </td>
+                    <td class="py-2 text-gray-600">N/A</td>
+                    <td class="py-2 text-right text-gray-400">Yesterday</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tracking Timeline Card -->
+          <div
+            class="bg-white rounded-2xl shadow-sm p-3 md:p-4 flex flex-col gap-3 text-xs"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-sm">Live Tracking</h3>
+                <lord-icon
+                  src="https://cdn.lordicon.com/lewtedlh.json"
+                  trigger="loop"
+                  delay="1500"
+                  style="width: 20px; height: 20px"
+                >
+                </lord-icon>
+              </div>
+              <span
+                class="px-2 py-[3px] rounded-full bg-[#4FF4C2]/20 text-[10px] text-[#00996b]"
+              >
+                QR Ready
+              </span>
+            </div>
+
+            <!-- Tracking Code Input -->
+            <div
+              class="flex items-center gap-2 bg-[#F7F8FC] rounded-xl px-3 py-2"
+            >
+              <input
+                type="text"
+                value="KH-20251207-AB12CD"
+                class="bg-transparent flex-1 text-[11px] outline-none"
+              />
+              <button
+                class="text-[11px] px-3 py-1 rounded-lg text-white shadow"
+                style="
+                  background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%);
+                "
+              >
+                Track
+              </button>
+            </div>
+
+            <!-- Status pill -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span
+                  class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#36E3FF]/10 text-[#0288D1] text-[11px]"
+                >
+                  <span
+                    class="h-2 w-2 rounded-full bg-[#36E3FF] mr-1 animate-pulse"
+                  ></span>
+                  In Transit · Phnom Penh → Siem Reap
+                </span>
+              </div>
+              <span class="text-[10px] text-gray-400">ETA: Today 18:30</span>
+            </div>
+
+            <!-- Timeline -->
+            <div class="mt-2 space-y-3">
+              <!-- Event 1 -->
+              <div class="flex gap-2">
+                <div class="flex flex-col items-center">
+                  <div class="h-2 w-2 bg-[#7CF77D] rounded-full mt-1"></div>
+                  <div class="flex-1 w-px bg-[#7CF77D]/40"></div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[11px] font-medium">
+                    Delivered to Receiver – Signed by Mr. X
+                  </p>
+                  <p class="text-[10px] text-gray-400">
+                    Siem Reap Branch · 18:12
+                  </p>
+                </div>
+              </div>
+
+              <!-- Event 2 -->
+              <div class="flex gap-2">
+                <div class="flex flex-col items-center">
+                  <div class="h-2 w-2 bg-[#36E3FF] rounded-full mt-1"></div>
+                  <div class="flex-1 w-px bg-[#36E3FF]/40"></div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[11px] font-medium">
+                    Arrived at Siem Reap Branch
+                  </p>
+                  <p class="text-[10px] text-gray-400">
+                    Siem Reap Branch · 17:45
+                  </p>
+                </div>
+              </div>
+
+              <!-- Event 3 -->
+              <div class="flex gap-2">
+                <div class="flex flex-col items-center">
+                  <div class="h-2 w-2 bg-[#A3B4FF] rounded-full mt-1"></div>
+                  <div class="flex-1 w-px bg-[#A3B4FF]/40"></div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[11px] font-medium">
+                    Departed from Phnom Penh Branch
+                  </p>
+                  <p class="text-[10px] text-gray-400">
+                    Phnom Penh Branch · 13:05
+                  </p>
+                </div>
+              </div>
+
+              <!-- Event 4 -->
+              <div class="flex gap-2">
+                <div class="flex flex-col items-center">
+                  <div class="h-2 w-2 bg-gray-300 rounded-full mt-1"></div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[11px] font-medium">
+                    Shipment created – Pending
+                  </p>
+                  <p class="text-[10px] text-gray-400">
+                    Phnom Penh Branch · 12:30
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <p class="mt-1 text-[10px] text-gray-400">
+              * Customers can scan QR code on receipt to open this tracking page
+              directly.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

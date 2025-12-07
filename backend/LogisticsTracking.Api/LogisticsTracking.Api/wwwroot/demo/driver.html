@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Driver Panel - DLTS Cambodia</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lordicon player -->
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body class="min-h-screen bg-[#F7F8FC] text-[#1E1E1E]">
+    <!-- Top Bar -->
+    <header class="w-full shadow-sm">
+      <div
+        class="flex items-center justify-between px-4 py-3"
+        style="background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%)"
+      >
+        <div class="flex items-center gap-2">
+          <div>
+            <p class="text-xs text-white/80">Driver Panel</p>
+            <p class="text-sm font-semibold text-white">DLTS Cambodia</p>
+          </div>
+          <lord-icon
+            src="https://cdn.lordicon.com/fttvwdlw.json"
+            trigger="loop"
+            delay="1500"
+            style="width: 26px; height: 26px"
+          >
+          </lord-icon>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="text-[11px] text-white/80 underline">
+            Admin Dashboard
+          </a>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-white/80 hidden xs:inline"
+              >Hello, Dara</span
+            >
+            <div
+              class="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold"
+            >
+              D
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="max-w-md mx-auto px-4 pt-4 pb-20 space-y-4">
+      <!-- Today's Route Summary -->
+      <section class="bg-white rounded-2xl shadow-sm p-3 space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[11px] text-gray-500">Today’s route</p>
+            <p class="text-sm font-semibold">Phnom Penh → Siem Reap</p>
+          </div>
+          <span
+            class="px-2 py-[2px] rounded-full bg-[#36E3FF]/10 text-[#0288D1] text-[10px]"
+          >
+            Truck A · GPS ON
+          </span>
+        </div>
+        <div class="flex justify-between text-[10px] text-gray-500">
+          <span
+            >Shipments:
+            <span class="font-semibold text-gray-700">24</span></span
+          >
+          <span
+            >Delivered:
+            <span class="font-semibold text-[#7CF77D]">8</span></span
+          >
+          <span
+            >Pending: <span class="font-semibold text-[#A3B4FF]">16</span></span
+          >
+        </div>
+      </section>
+
+      <!-- Big Action Buttons -->
+      <section class="grid grid-cols-2 gap-3 text-xs">
+        <button
+          class="rounded-2xl p-3 bg-[#4F8CFF] text-white font-medium shadow-md active:scale-[0.98] flex flex-col items-start gap-1"
+        >
+          <div class="flex items-center gap-2">
+            <lord-icon
+              src="https://cdn.lordicon.com/lbjtvqiv.json"
+              trigger="loop"
+              delay="1200"
+              style="width: 22px; height: 22px"
+            >
+            </lord-icon>
+            <span>Depart Branch</span>
+          </div>
+          <p class="text-[10px] text-white/70">
+            Set all assigned as In Transit
+          </p>
+        </button>
+        <button
+          class="rounded-2xl p-3 bg-[#36E3FF]/10 text-[#0288D1] font-medium shadow-sm active:scale-[0.98] flex flex-col items-start gap-1"
+        >
+          <div class="flex items-center gap-2">
+            <lord-icon
+              src="https://cdn.lordicon.com/lewtedlh.json"
+              trigger="loop"
+              delay="1500"
+              style="width: 22px; height: 22px"
+            >
+            </lord-icon>
+            <span>Arrive Hub</span>
+          </div>
+          <p class="text-[10px] text-gray-500">Scan or confirm at hub</p>
+        </button>
+        <button
+          class="rounded-2xl p-3 bg-[#7CF77D]/10 text-[#2F9A3F] font-medium shadow-sm active:scale-[0.98] col-span-2 flex flex-col items-start gap-1"
+        >
+          <div class="flex items-center gap-2">
+            <lord-icon
+              src="https://cdn.lordicon.com/fttvwdlw.json"
+              trigger="loop"
+              delay="2000"
+              style="width: 22px; height: 22px"
+            >
+            </lord-icon>
+            <span>Mark as Delivered</span>
+          </div>
+          <p class="text-[10px] text-gray-500">Confirm receiver & signature</p>
+        </button>
+      </section>
+
+      <!-- Assigned Shipments List -->
+      <section class="bg-white rounded-2xl shadow-sm p-3 space-y-2 text-xs">
+        <div class="flex items-center justify-between mb-1">
+          <h2 class="text-sm font-semibold">Assigned shipments</h2>
+          <span class="text-[10px] text-gray-400">Swipe / scroll</span>
+        </div>
+
+        <div class="space-y-2 max-h-72 overflow-y-auto pr-1">
+          <!-- Item 1 -->
+          <article
+            class="border border-gray-100 rounded-2xl px-3 py-2 flex justify-between items-center gap-2"
+          >
+            <div class="space-y-1">
+              <p class="text-[11px] font-semibold">KH-20251207-AB12CD</p>
+              <p class="text-[10px] text-gray-500">PP → Siem Reap</p>
+              <p class="text-[10px] text-gray-400">
+                Receiver: Davy · Phone: 012 345 678
+              </p>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span
+                class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#36E3FF]/10 text-[#0288D1] text-[10px]"
+              >
+                In Transit
+              </span>
+              <button
+                class="px-2 py-[3px] rounded-full text-[10px] bg-[#7CF77D] text-[#165c23] font-medium"
+              >
+                Delivered
+              </button>
+            </div>
+          </article>
+
+          <!-- Item 2 -->
+          <article
+            class="border border-gray-100 rounded-2xl px-3 py-2 flex justify-between items-center gap-2"
+          >
+            <div class="space-y-1">
+              <p class="text-[11px] font-semibold">KH-20251207-XY98ZT</p>
+              <p class="text-[10px] text-gray-500">PP → Kampong Thom (Hub)</p>
+              <p class="text-[10px] text-gray-400">
+                Receiver: Lina · Phone: 098 765 432
+              </p>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span
+                class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#A3B4FF]/15 text-[#4F5FBF] text-[10px]"
+              >
+                Pending at Hub
+              </span>
+              <button
+                class="px-2 py-[3px] rounded-full text-[10px] bg-[#36E3FF]/10 text-[#0288D1] font-medium"
+              >
+                Load to Truck B
+              </button>
+            </div>
+          </article>
+
+          <!-- Item 3 -->
+          <article
+            class="border border-gray-100 rounded-2xl px-3 py-2 flex justify-between items-center gap-2"
+          >
+            <div class="space-y-1">
+              <p class="text-[11px] font-semibold">KH-20251206-CX77OP</p>
+              <p class="text-[10px] text-gray-500">PP → Battambang</p>
+              <p class="text-[10px] text-gray-400">
+                Receiver: Vuthy · Phone: 016 222 333
+              </p>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span
+                class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#FFB26B]/20 text-[#FF8F3C] text-[10px]"
+              >
+                Delay / Check
+              </span>
+              <button
+                class="px-2 py-[3px] rounded-full text-[10px] bg-[#FF4F7B]/10 text-[#FF4F7B] font-medium"
+              >
+                Report Issue
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom sticky info -->
+    <footer
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200"
+    >
+      <div
+        class="max-w-md mx-auto flex items-center justify-between px-4 py-2 text-[10px] text-gray-500"
+      >
+        <span>Next stop: Siem Reap Branch</span>
+        <span class="text-[#36E3FF]">GPS: ON</span>
+      </div>
+    </footer>
+  </body>
+</html>

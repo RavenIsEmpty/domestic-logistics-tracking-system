@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Shipment - DLTS Cambodia</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lordicon player -->
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  </head>
+  <body class="min-h-screen bg-[#F7F8FC] text-[#1E1E1E]">
+    <!-- Top Navbar with Gradient -->
+    <header class="w-full shadow-sm">
+      <div
+        class="flex items-center justify-between px-6 py-3"
+        style="background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%)"
+      >
+        <div class="flex items-center gap-2">
+          <div
+            class="h-9 w-9 rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-lg"
+          >
+            DL
+          </div>
+          <div>
+            <h1 class="text-white font-semibold text-lg">DLTS Cambodia</h1>
+            <p class="text-xs text-white/80">Create New Shipment</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 text-xs text-white/80">
+          <a href="index.html" class="underline hidden sm:inline">Dashboard</a>
+          <a href="driver.html" class="underline hidden sm:inline"
+            >Driver Panel</a
+          >
+          <a href="tracking.html" class="underline hidden sm:inline"
+            >Tracking Page</a
+          >
+          <span class="hidden sm:inline">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="max-w-5xl mx-auto px-4 py-6 md:py-8 space-y-6">
+      <!-- Title -->
+      <div
+        class="flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+      >
+        <div>
+          <h2 class="text-lg font-semibold">New Domestic Shipment</h2>
+          <p class="text-xs text-gray-500">
+            Fill in contact phones and route information. System will generate
+            tracking code & QR.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-[11px] text-gray-500">
+          <span
+            class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#A3B4FF]/10 gap-1"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/lewtedlh.json"
+              trigger="loop"
+              delay="1500"
+              style="width: 18px; height: 18px"
+            >
+            </lord-icon>
+            Cambodia only
+          </span>
+          <span
+            class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#36E3FF]/10 text-[#0288D1] gap-1"
+          >
+            <lord-icon
+              src="https://cdn.lordicon.com/lbjtvqiv.json"
+              trigger="loop"
+              delay="2000"
+              style="width: 18px; height: 18px"
+            >
+            </lord-icon>
+            Branch: Phnom Penh
+          </span>
+        </div>
+      </div>
+
+      <!-- Form + Preview -->
+      <section class="grid lg:grid-cols-3 gap-5">
+        <!-- Form -->
+        <form
+          class="lg:col-span-2 bg-white rounded-2xl shadow-sm p-4 md:p-5 space-y-4 text-xs"
+          id="shipmentForm"
+        >
+          <!-- Contacts -->
+          <div class="space-y-2">
+            <p
+              class="text-[11px] font-semibold text-gray-700 uppercase tracking-wide"
+            >
+              Contacts
+            </p>
+            <div class="grid md:grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600">Sender phone</label>
+                <input
+                  name="senderPhone"
+                  required
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                  placeholder="0xx xxx xxx"
+                />
+                <p class="text-[10px] text-gray-400">
+                  Phone used when sending at origin branch.
+                </p>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600">Receiver phone</label>
+                <input
+                  name="receiverPhone"
+                  required
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                  placeholder="0xx xxx xxx"
+                />
+                <p class="text-[10px] text-gray-400">
+                  Phone used when picking up at destination.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Route -->
+          <div class="space-y-2">
+            <p
+              class="text-[11px] font-semibold text-gray-700 uppercase tracking-wide"
+            >
+              Route
+            </p>
+            <div class="grid md:grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600">Origin branch</label>
+                <select
+                  name="origin"
+                  required
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                >
+                  <option value="">Select origin…</option>
+                  <option>Phnom Penh Branch</option>
+                  <option>Siem Reap Branch</option>
+                  <option>Battambang Branch</option>
+                  <option>Kampong Thom Hub</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600"
+                  >Destination branch</label
+                >
+                <select
+                  name="destination"
+                  required
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                >
+                  <option value="">Select destination…</option>
+                  <option>Phnom Penh Branch</option>
+                  <option>Siem Reap Branch</option>
+                  <option>Battambang Branch</option>
+                  <option>Kampong Thom Hub</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-3">
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600">Route type</label>
+                <select
+                  name="routeType"
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                >
+                  <option>Direct (No transit)</option>
+                  <option>Transit via hub</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600">Package type</label>
+                <select
+                  name="packageType"
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                >
+                  <option>Box</option>
+                  <option>Document</option>
+                  <option>Parcel</option>
+                  <option>Fragile</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600">Weight (kg)</label>
+                <input
+                  name="weight"
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                  placeholder="e.g. 3.5"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment / Notes -->
+          <div class="space-y-2">
+            <p
+              class="text-[11px] font-semibold text-gray-700 uppercase tracking-wide"
+            >
+              Other
+            </p>
+            <div class="grid md:grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600">Payment type</label>
+                <select
+                  name="paymentType"
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                >
+                  <option>Pay at origin</option>
+                  <option>Pay at destination</option>
+                  <option>COD (future)</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[11px] text-gray-600"
+                  >Estimated fee (USD)</label
+                >
+                <input
+                  name="fee"
+                  class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                  placeholder="Auto or manual"
+                />
+              </div>
+            </div>
+            <div class="space-y-1">
+              <label class="text-[11px] text-gray-600"
+                >Notes for driver / branch</label
+              >
+              <textarea
+                name="notes"
+                rows="2"
+                class="w-full bg-[#F7F8FC] border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#4F8CFF]"
+                placeholder="e.g. Fragile, keep upright, call receiver before delivery"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2"
+          >
+            <div class="flex gap-2 text-[10px] text-gray-400">
+              <span
+                class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#F7F8FC]"
+              >
+                Status:
+                <span class="ml-1 font-medium text-[#A3B4FF]">Pending</span>
+              </span>
+              <span
+                class="inline-flex items-center px-2 py-[2px] rounded-full bg-[#F7F8FC]"
+              >
+                First event: Shipment created
+              </span>
+            </div>
+            <div class="flex gap-2 justify-end">
+              <button
+                type="reset"
+                class="px-4 py-2 rounded-xl text-xs border border-gray-200 text-gray-600 hover:bg-gray-50"
+              >
+                Clear
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 rounded-xl text-xs font-medium text-white shadow-md"
+                style="
+                  background: linear-gradient(135deg, #4f8cff 0%, #8a5bff 100%);
+                "
+              >
+                Create Shipment
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Preview / Receipt -->
+        <aside class="bg-white rounded-2xl shadow-sm p-4 space-y-3 text-xs">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-semibold text-gray-700">
+                Preview · Receipt
+              </p>
+              <p class="text-[10px] text-gray-400">
+                What cashier prints for customer
+              </p>
+            </div>
+            <div class="flex flex-col items-center text-[9px] text-gray-400">
+              <div
+                class="h-16 w-16 rounded-xl border border-dashed border-gray-300 flex items-center justify-center"
+              >
+                QR
+              </div>
+              <span class="mt-1">Tracking QR</span>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-[#F7F8FC] p-3 space-y-2" id="receiptBox">
+            <p class="font-mono text-[11px]" id="trackingCode">
+              KH-20251207-XXXXXX
+            </p>
+            <p class="text-[10px] text-gray-500" id="routePreview">
+              Origin → Destination
+            </p>
+            <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-500">
+              <div>
+                <p class="font-semibold text-gray-700">Sender phone</p>
+                <p id="senderPreview">-</p>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-700">Receiver phone</p>
+                <p id="receiverPreview">-</p>
+              </div>
+            </div>
+            <p class="text-[10px] text-gray-400" id="packagePreview">
+              Package: - · Weight: -
+            </p>
+            <p class="text-[10px] text-gray-400" id="feePreview">Fee: -</p>
+          </div>
+
+          <p class="text-[10px] text-gray-400">
+            * Tracking code format:
+            <span class="font-mono">KH-YYYYMMDD-XXXXXX</span>. * Phone numbers
+            are used by staff to find shipments quickly.
+          </p>
+        </aside>
+      </section>
+    </main>
+
+    <!-- Tiny JS to update preview (front-end only demo) -->
+    <script>
+      const form = document.getElementById("shipmentForm");
+
+      const senderPreview = document.getElementById("senderPreview");
+      const receiverPreview = document.getElementById("receiverPreview");
+      const routePreview = document.getElementById("routePreview");
+      const packagePreview = document.getElementById("packagePreview");
+      const feePreview = document.getElementById("feePreview");
+      const trackingCodeLabel = document.getElementById("trackingCode");
+
+      function generateFakeCode() {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+        return `KH-${yyyy}${mm}${dd}-${random}`;
+      }
+
+      form.addEventListener("input", () => {
+        const data = new FormData(form);
+
+        const senderPhone = data.get("senderPhone") || "-";
+        const receiverPhone = data.get("receiverPhone") || "-";
+        const origin = data.get("origin") || "Origin";
+        const destination = data.get("destination") || "Destination";
+        const packageType = data.get("packageType") || "-";
+        const weight = data.get("weight") || "-";
+        const fee = data.get("fee") || "-";
+
+        senderPreview.textContent = senderPhone;
+        receiverPreview.textContent = receiverPhone;
+        routePreview.textContent = `${origin} → ${destination}`;
+        packagePreview.textContent = `Package: ${packageType} · Weight: ${weight} kg`;
+        feePreview.textContent = `Fee: ${fee === "-" ? "-" : fee + " USD"}`;
+      });
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const code = generateFakeCode();
+        trackingCodeLabel.textContent = code;
+        alert(
+          "Shipment created (front-end demo only).\nTracking code: " + code
+        );
+      });
+    </script>
+  </body>
+</html>
